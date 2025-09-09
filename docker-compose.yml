@@ -1,0 +1,75 @@
+version: '3.8'
+services:
+  mysql:
+    image: mysql:8
+    container_name: mysql-db
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: usuariosdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - my-network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    environment:
+      PMA_HOST: mysql
+      PMA_PORT: 3306
+    ports:
+      - "8080:80"
+    networks:
+      - my-network
+    depends_on:
+      - mysql
+
+  postgres:
+    image: postgres:15
+    environment:
+      POSTGRES_PASSWORD: postgrespassword
+      POSTGRES_DB: usuariosdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init-postgres.sql:/docker-entrypoint-initdb.d/init-postgres.sql
+    networks:
+      - my-network
+  mongo:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - my-network
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: admin
+    ports:
+      - "8081:80"
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+  mongo-express:
+    image: mongo-express
+    environment:
+      ME_CONFIG_MONGODB_SERVER: mongo
+      ME_CONFIG_BASICAUTH_USERNAME: admin
+      ME_CONFIG_BASICAUTH_PASSWORD: password
+    ports:
+      - "8082:8081"
+    depends_on:
+      - mongo
+    networks:
+      - my-network
+volumes:
+  mongo_data:
+networks:
+  my-network:
+    driver: bridge
