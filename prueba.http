@@ -2,7 +2,7 @@
 GET http://localhost:3000/users
 
 ### Obtener usuario por ID
-GET http://localhost:3000/users/1
+GET http://localhost:3000/users/68c0efcde8ee7c282b4907c0
 
 ### Crear usuario
 POST http://localhost:3000/users
@@ -10,11 +10,11 @@ Content-Type: application/json
 
 {
   "name": "Juan Perez",
-  "email": "juan.perez@email.com"
+  "email": "juan.perez2@email.com"
 }
 
 ### Actualizar usuario
-PUT http://localhost:3000/users/2
+PUT http://localhost:3000/users/68c0f1621738a2c237d98371
 Content-Type: application/json
 
 {
@@ -23,4 +23,4 @@ Content-Type: application/json
 }
 
 ### Eliminar usuario
-DELETE http://localhost:3000/users/2
+DELETE http://localhost:3000/users/68c0f1621738a2c237d98371
