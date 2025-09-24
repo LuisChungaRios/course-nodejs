@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>CRUD Usuarios - NestJS + MongoDB</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen p-6">
+  <div class="max-w-4xl mx-auto">
+    <h1 class="text-2xl font-bold mb-4">CRUD de Usuarios</h1>
+
+    <!-- Formulario -->
+    <div class="bg-white p-4 rounded shadow mb-6">
+      <h2 class="font-semibold mb-2">Crear / Editar Usuario</h2>
+      <form id="userForm" class="grid grid-cols-1 gap-3">
+        <input type="hidden" id="userId" />
+
+        <div class="flex gap-2">
+          <input id="name" placeholder="Nombre" class="flex-1 border rounded p-2" />
+          <input id="last_name" placeholder="Apellido" class="flex-1 border rounded p-2" />
+        </div>
+
+        <div class="flex gap-2">
+          <input id="born_date" type="date" class="flex-1 border rounded p-2" />
+          <select id="document_type" class="flex-1 border rounded p-2">
+            <option value="DNI">DNI</option>
+            <option value="PASAPORTE">PASAPORTE</option>
+          </select>
+        </div>
+
+        <div class="flex gap-2">
+          <input id="document_number" placeholder="Número de documento" class="flex-1 border rounded p-2" />
+          <label class="flex items-center gap-2">
+            <input id="is_active" type="checkbox" class="h-4 w-4" checked />
+            <span>Activo</span>
+          </label>
+        </div>
+
+        <div class="flex gap-2">
+          <button type="submit" class="bg-blue-600 text-white px-4 py-2 rounded">Guardar</button>
+          <button type="button" id="resetBtn" class="bg-gray-300 px-4 py-2 rounded">Limpiar</button>
+        </div>
+
+        <div id="formMsg" class="text-sm text-red-600"></div>
+      </form>
+    </div>
+
+    <!-- Lista -->
+    <div class="bg-white p-4 rounded shadow">
+      <div class="flex justify-between items-center mb-3">
+        <h2 class="font-semibold">Usuarios</h2>
+        <input id="search" placeholder="Buscar por nombre o documento" class="border rounded p-2 w-64" />
+      </div>
+      <div id="usersList" class="space-y-3"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Subir Archivos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 flex flex-col items-center p-6">
+    <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg text-center mb-6">
+      <h2 class="text-xl font-bold mb-4">Subir Archivos</h2>
+      <input type="file" id="fileInput" class="mb-4" />
+      <div class="flex justify-between mt-4">
+        <button onclick="uploadLocal()" class="bg-blue-500 text-white px-4 py-2 rounded">Subir Local</button>
+        <button onclick="uploadS3()" class="bg-green-500 text-white px-4 py-2 rounded">Subir S3</button>
+      </div>
+      <div id="result" class="mt-4 text-sm text-gray-700"></div>
+    </div>
+
+    <div id="gallery" class="grid grid-cols-2 gap-4 w-full max-w-lg"></div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
