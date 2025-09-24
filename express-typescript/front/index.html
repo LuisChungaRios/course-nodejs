@@ -1,0 +1,139 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CRUD Usuarios</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 p-8">
+
+  <div class="max-w-4xl mx-auto bg-white p-6 rounded-xl shadow-lg">
+    <h1 class="text-2xl font-bold mb-4 text-center">CRUD Usuarios</h1>
+
+    <!-- Formulario -->
+    <form id="userForm" class="mb-6 space-y-4">
+      <input type="hidden" id="userId" />
+
+      <div class="grid grid-cols-2 gap-4">
+        <input id="name" placeholder="Nombre" class="border p-2 rounded w-full" required />
+        <input id="lastName" placeholder="Apellido" class="border p-2 rounded w-full" required />
+        <input id="bornDate" type="date" class="border p-2 rounded w-full" required />
+        <select id="documentType" class="border p-2 rounded w-full" required>
+          <option value="">Tipo Documento</option>
+          <option value="DNI">DNI</option>
+          <option value="PASAPORTE">PASAPORTE</option>
+        </select>
+        <input id="documentNumber" placeholder="N° Documento" class="border p-2 rounded w-full" required />
+        <select id="isActive" class="border p-2 rounded w-full" required>
+          <option value="true">Activo</option>
+          <option value="false">Inactivo</option>
+        </select>
+      </div>
+
+      <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 w-full">
+        Guardar
+      </button>
+    </form>
+
+    <!-- Tabla -->
+    <table class="table-auto w-full border-collapse border border-gray-200">
+      <thead class="bg-gray-200">
+        <tr>
+          <th class="border p-2">Nombre</th>
+          <th class="border p-2">Apellido</th>
+          <th class="border p-2">Documento</th>
+          <th class="border p-2">Activo</th>
+          <th class="border p-2">Acciones</th>
+        </tr>
+      </thead>
+      <tbody id="userTable"></tbody>
+    </table>
+  </div>
+
+  <script>
+    const API_URL = "http://localhost:3000/users";
+    const userForm = document.getElementById("userForm");
+    const userTable = document.getElementById("userTable");
+
+    // Cargar usuarios al inicio
+    document.addEventListener("DOMContentLoaded", loadUsers);
+
+    // Manejar formulario
+    userForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const userId = document.getElementById("userId").value;
+      const userData = {
+        name: document.getElementById("name").value,
+        lastName: document.getElementById("lastName").value,
+        bornDate: document.getElementById("bornDate").value,
+        documentType: document.getElementById("documentType").value,
+        documentNumber: document.getElementById("documentNumber").value,
+        isActive: document.getElementById("isActive").value === "true"
+      };
+
+      if (userId) {
+        await fetch(`${API_URL}/${userId}`, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData)
+        });
+      } else {
+        await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData)
+        });
+      }
+
+      userForm.reset();
+      loadUsers();
+    });
+
+    // Cargar usuarios en la tabla
+    async function loadUsers() {
+      const res = await fetch(API_URL);
+      const users = await res.json();
+      userTable.innerHTML = "";
+
+      users.forEach(user => {
+        const row = document.createElement("tr");
+        row.innerHTML = `
+          <td class="border p-2">${user.name}</td>
+          <td class="border p-2">${user.lastName}</td>
+          <td class="border p-2">${user.documentType} - ${user.documentNumber}</td>
+          <td class="border p-2">${user.isActive ? "Sí" : "No"}</td>
+          <td class="border p-2 text-center space-x-2">
+            <button onclick="editUser('${user._id}')" class="bg-yellow-400 px-2 py-1 rounded">Editar</button>
+            <button onclick="deleteUser('${user._id}')" class="bg-red-500 text-white px-2 py-1 rounded">Eliminar</button>
+          </td>
+        `;
+        userTable.appendChild(row);
+      });
+    }
+
+    // Editar usuario
+    async function editUser(id) {
+      const res = await fetch(`${API_URL}/${id}`);
+      const user = await res.json();
+
+      document.getElementById("userId").value = user._id;
+      document.getElementById("name").value = user.name;
+      document.getElementById("lastName").value = user.lastName;
+      document.getElementById("bornDate").value = user.bornDate;
+      document.getElementById("documentType").value = user.documentType;
+      document.getElementById("documentNumber").value = user.documentNumber;
+      document.getElementById("isActive").value = user.isActive;
+    }
+
+    // Eliminar usuario
+    async function deleteUser(id) {
+      if (confirm("¿Seguro que deseas eliminar este usuario?")) {
+        await fetch(`${API_URL}/${id}`, { method: "DELETE" });
+        loadUsers();
+      }
+    }
+  </script>
+</body>
+</html>
