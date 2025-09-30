@@ -1,0 +1,21 @@
+### Register
+POST  http://localhost:3000/register
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+### Login
+POST http://localhost:3000/login
+Content-Type: application/json
+
+{
+  "username": "test",
+  "password": "test"
+}
+
+### Dashboard
+GET http://localhost:3000/dashboard
+Authorization: Bearer <token>
