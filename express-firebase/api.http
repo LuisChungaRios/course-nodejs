@@ -1,0 +1,32 @@
+### Create user
+POST http://localhost:3001/users
+Content-Type: application/json
+
+{
+  "name": "test",
+  "email": "test@example.com",
+  "age": 27
+}
+
+
+### List users
+GET http://localhost:3001/users
+Content-Type: application/json
+
+### Get user by ID
+GET http://localhost:3001/users/Zs6RosupYOt3SeTZ61Ay
+Content-Type: application/json
+
+### Update user by ID
+PATCH http://localhost:3001/users/Zs6RosupYOt3SeTZ61Ay
+Content-Type: application/json
+
+{
+  "age": 21,
+  "name": "updated name",
+  "email": "updated@example.com"
+}
+
+### Delete user by ID
+DELETE http://localhost:3001/users/Zs6RosupYOt3SeTZ61Ay
+Content-Type: application/json
