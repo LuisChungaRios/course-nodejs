@@ -2,6 +2,9 @@ const express = require("express");
 const jwt = require("jsonwebtoken");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
+const swaggerUi = require('swagger-ui-express');
+const swaggerJsdoc = require('swagger-jsdoc');
+
 dotenv.config();
 
 const app = express();
@@ -11,7 +14,60 @@ const SECRET_KEY = process.env.JWT_SECRET;
 console.log('SECRET_KEY', SECRET_KEY);
 let users = [];
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerJsdoc({
+  definition: {
+    openapi: '3.0.0',
+    info: {
+      title: 'API de Autenticación con JWT',
+      version: '1.0.0',
+      description: 'API simple para autenticación usando JSON Web Tokens (JWT) con Express.js',
+    },
+  },
+  apis: ['./server.js'], // Rutas a los archivos con anotaciones JSDoc
+})))
 
+
+
+/**
+ * @components
+ * schemas:
+ *   User:
+ *     type: object
+ *     properties:
+ *       username:
+ *         type: string
+ *       password:
+ *         type: string
+ *     required:
+ *       - username
+ *       - password
+ */
+
+/**
+ * @openapi
+ * /register:
+ *  post:
+ *    tags: [Auth]
+ *    description: Registra un nuevo usuario,
+ *    summary: Registra un nuevo usuario
+ *    operationId: registerUser
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *              password:
+ *                type: string
+ *    responses:
+ *      200:
+ *        description: Usuario registrado con éxito
+ *      400:
+ *        description: Error en la solicitud (usuario ya existe o datos faltantes) 
+ */
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
 
@@ -32,6 +88,33 @@ app.post("/register", async (req, res) => {
   console.log('users', JSON.stringify(users));
   res.json({ message: "Usuario registrado con éxito" });
 });
+
+
+/** * @openapi
+ * /login:
+ *  post:
+ *    tags: [Auth]
+ *    description: Inicia sesión y obtiene un token JWT
+ *    summary: Inicia sesión
+ *    operationId: loginUser
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              username:
+ *                type: string
+ *              password:
+ *                type: string
+ *    responses:
+ *      200:
+ *        description: Login exitoso, retorna un token JWT
+ *      401:
+ *        description: Credenciales inválidas
+ */
+
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
@@ -68,6 +151,21 @@ function authenticateToken(req, res, next) {
   });
 }
 
+
+/**
+ * @openapi
+ * /dashboard:
+ *  get:
+ *    tags: [Auth]
+ *    description: Obtiene información del usuario autenticado
+ *    summary: Obtiene información del usuario
+ *    operationId: getDashboardInfo
+ *    responses:
+ *      200:
+ *        description: Información del usuario autenticado
+ *      403:
+ *        description: Token inválido o expirado
+ */
 app.get("/dashboard", authenticateToken, (req, res) => {
   res.json({ message: `Bienvenido ${req.user.username}, esta es tu ruta protegida!` });
 });
